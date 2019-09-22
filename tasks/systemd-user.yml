@@ -1,0 +1,6 @@
+---
+- name: Setup systemd user dir
+  file:
+    state: directory
+    path: "{{ desktop_user_vars.dir }}/.config/systemd/user"
+    recurse: yes

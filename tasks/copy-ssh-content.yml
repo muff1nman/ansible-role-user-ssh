@@ -1,0 +1,17 @@
+---
+- name: Pull pass content as base64
+  shell: |
+    pass show {{ pass_cmd_prefix }}hosts/{{ ansible_hostname }}/ssh/{{ item }} | base64
+  delegate_to: localhost
+  changed_when: False
+  register: pass_content
+
+# TODO fix changed when
+- name: Copy base64 content to host
+  shell: |
+    echo '{{ pass_content.stdout }}' | base64 -d > {{ desktop_user_vars.dir }}/.ssh/{{ item }}
+
+- name: Change mode
+  file:
+    path: "{{ desktop_user_vars.dir }}/.ssh/{{ item }}"
+    mode: 0600

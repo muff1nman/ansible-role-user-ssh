@@ -1,0 +1,9 @@
+---
+- name: Check if ssh key present
+  stat:
+    path: "{{ desktop_user_vars.dir }}/.ssh/id_rsa.pub"
+  register: ssh_keys
+- name: Create local user ssh key
+  shell: >
+    ssh-keygen -b 4096 -t rsa -N '' -f {{ desktop_user_vars.dir }}/.ssh/id_rsa
+  when: not ssh_keys.stat.exists

@@ -1,0 +1,38 @@
+---
+- name: Create .ssh directory
+  file:
+    state: directory
+    path: "{{ desktop_user_vars.dir }}/.ssh"
+- name: Configure ssh client via ~/.ssh/config
+  template:
+    src: ssh/config
+    dest: "{{ desktop_user_vars.dir }}/.ssh/config"
+    mode: 0600
+- name: List ssh keys for host
+  shell: |
+    ls ~/.password-store/{{ pass_cmd_prefix }}hosts/{{ ansible_hostname }}/ssh/ | sed 's/.gpg$//'
+  delegate_to: localhost
+  ignore_errors: yes
+  register: ssh_keys_list
+  changed_when: False
+- name: Copy ssh keys
+  include_tasks: copy-ssh-content.yml
+  with_items: "{{ ssh_keys_list.stdout_lines }}"
+  when: ssh_keys_list.rc == 0
+- include_tasks: generate-ssh.yml
+  when: ssh_keys_list.rc != 0
+- include_tasks: systemd-user.yml
+- name: Setup ssh-agent user service
+  copy:
+    src: ssh-agent.service
+    dest: "{{ desktop_user_vars.dir }}/.config/systemd/user/ssh-agent.service"
+  notify: [ 'systemd user' ]
+- meta: flush_handlers
+- name: Enable and start ssh-agent
+  service:
+    name: ssh-agent
+    state: started
+    enabled: yes
+    user: yes
+  environment:
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ desktop_user_vars.uid }}/bus"

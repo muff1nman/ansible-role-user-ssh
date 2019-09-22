@@ -1,0 +1,6 @@
+HashKnownHosts yes
+AddKeysToAgent  yes
+
+{% if additional_ssh_config is defined %}
+{{ additional_ssh_config }}
+{% endif %}
