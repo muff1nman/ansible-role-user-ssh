@@ -1,9 +1,4 @@
 ---
-- name: Setting up User Variables
-  discover_user_vars:
-    user: "{{ ansible_env.USER }}"
-  check_mode: no
-  register: desktop_user_vars
 - block:
   - include_tasks: ssh.yml
   when: ssh_config is undefined or ssh_config != 'disable'
