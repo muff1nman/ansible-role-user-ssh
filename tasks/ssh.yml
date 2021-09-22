@@ -10,7 +10,7 @@
     mode: 0600
 - name: List ssh keys for host
   shell: |
-    ls ~/.password-store/{{ pass_cmd_prefix }}hosts/{{ ansible_hostname }}/ssh/ | sed 's/.gpg$//'
+    ls ~/.password-store/{{ pass_cmd_prefix }}hosts/{{ inventory_hostname_short }}/ssh/ | sed 's/.gpg$//'
   delegate_to: localhost
   ignore_errors: yes
   register: ssh_keys_list
