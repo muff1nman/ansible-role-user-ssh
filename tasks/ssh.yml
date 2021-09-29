@@ -3,11 +3,24 @@
   file:
     state: directory
     path: "{{ desktop_user_vars.dir }}/.ssh"
+- name: Create controlmasters directory
+  file:
+    state: directory
+    path: "{{ desktop_user_vars.dir }}/.ssh/controlmasters"
 - name: Configure ssh client via ~/.ssh/config
   template:
     src: ssh/config
     dest: "{{ desktop_user_vars.dir }}/.ssh/config"
     mode: 0600
+  when:
+    - ssh_config_symlink is undefined
+- name: Config ssh client as symlink for ~/.ssh/config
+  file:
+    state: link
+    dest: "{{ desktop_user_vars.dir }}/.ssh/config"
+    src: "{{ ssh_config_symlink }}"
+  when:
+    - ssh_config_symlink is defined
 - name: List ssh keys for host
   shell: |
     ls ~/.password-store/{{ pass_cmd_prefix }}hosts/{{ inventory_hostname_short }}/ssh/ | sed 's/.gpg$//'
