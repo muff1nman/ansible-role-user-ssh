@@ -8,8 +8,8 @@
     state: directory
     path: "{{ desktop_user_vars.dir }}/.ssh/controlmasters"
 - name: Configure ssh client via ~/.ssh/config
-  template:
-    src: ssh/config
+  copy:
+    content: "{{ ssh_config }}"
     dest: "{{ desktop_user_vars.dir }}/.ssh/config"
     mode: 0600
   when:

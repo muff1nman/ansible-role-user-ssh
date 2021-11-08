@@ -1,0 +1,3 @@
+ssh_config: |
+  HashKnownHosts yes
+  AddKeysToAgent  yes
