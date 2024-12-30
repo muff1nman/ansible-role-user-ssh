@@ -3,10 +3,6 @@
   file:
     state: directory
     path: "{{ desktop_user_vars.dir }}/.ssh"
-- name: Create controlmasters directory
-  file:
-    state: directory
-    path: "{{ desktop_user_vars.dir }}/.ssh/controlmasters"
 - name: Configure ssh client via ~/.ssh/config
   copy:
     content: "{{ ssh_config }}"
